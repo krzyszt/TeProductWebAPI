@@ -2,8 +2,15 @@ var productController = function (Product) {
 
     var post = function (req, res) {
         var product = new Product(req.body);
-        product.save()
-        res.status(201).send(product);
+
+        if (!req.body.productName) {
+            res.status(400);
+            res.send('Product name required');
+        } else {
+            product.save()
+            res.status(201);
+            res.send(product);
+        }
     }
 
     var get = function (req, res) {
