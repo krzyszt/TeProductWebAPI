@@ -4,31 +4,11 @@ var routes = function (Product) {
 
     var webRouter = express.Router();
 
+    var productController = require('../controllers/productController')(Product);
+
     webRouter.route('/')
-        .post(function (req, res) {
-            var product = new Product(req.body);
-            product.save()
-            res.status(201).send(product);
-        })
-        .get(function (req, res) {
-            var query = {};
-            if (req.query.category) {
-                query.category = req.query.category;
-            }
-            Product.find(query, function (err, data) {
-                if (err) {
-                    res.status(500).send(err);
-                } else {
-                    if (data.length > 0) {
-                        res.json(data);
-                    } else {
-                        var populate = require('./models/populate');
-                        populate();
-                        res.send('Populating MongoDB with dummy products...Try again in a sec.');
-                    }
-                }
-            });
-        });
+        .post(productController.post)
+        .get(productController.get);
 
     webRouter.use('/:productId', function (req, res, next) {
         Product.findById(req.params.productId, function (err, data) {
