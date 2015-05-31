@@ -18,11 +18,15 @@ var webRouter = express.Router();
 
 webRouter.route('/products')
     .get(function (req, res) {
-        Product.find(function(err,data){
+        var query = {};
+        if (req.query.category) {
+            query.category = req.query.category;
+        }
+        Product.find(query, function (err, data) {
             if (err) {
                 res.status(500).send(err);
             } else {
-                if ( data.length > 0) {
+                if (data.length > 0) {
                     res.json(data);
                 } else {
                     var populate = require('./models/populate');
@@ -34,9 +38,20 @@ webRouter.route('/products')
         });
     });
 
+webRouter.route('/products/:productId')
+    .get(function (req, res) {
+        Product.findById(req.params.productId, function (err, data) {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                res.json(data);
+            }
+        });
+    });
+
 app.use('/api', webRouter);
 
-app.get('/', function(req,res){
+app.get('/', function (req, res) {
     res.send('Welcome to TeProduct Web API');
 })
 
