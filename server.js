@@ -11,10 +11,14 @@ var app = express(),
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-
 // ======================= MongoDB ======================================
-var dbURI = 'mongodb://localhost/TeProductAPI';
-mongoose.connect(dbURI);
+var db;
+
+if(process.env.ENV === 'Test') {
+    db = mongoose.connect('mongodb://localhost/TeProductAPI_test');
+} else {
+    db = mongoose.connect('mongodb://localhost/TeProductAPI');
+}
 
 var Product = require('./models/product');
 
@@ -30,6 +34,8 @@ app.get('/', function (req, res) {
 app.listen(port, function () {
     console.log('TeProduct Web Server listening on port ' + port);
 });
+
+module.exports = app;
 
 
 

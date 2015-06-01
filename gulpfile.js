@@ -1,6 +1,8 @@
 var gulp = require('gulp'),
     nodemon = require('gulp-nodemon'),
-    mocha = require('gulp-mocha');
+    mocha = require('gulp-mocha'),
+    env = require('gulp-env'),
+    supertest = require('supertest');
 
 gulp.task('default', function () {
     nodemon({
@@ -16,7 +18,8 @@ gulp.task('default', function () {
         });
 });
 
-gulp.task('test', function(){
-   gulp.src('tests/*.js',{read: false})
-       .pipe(mocha({reporter: "nyan" }));
+gulp.task('test', function () {
+    env({vars: {ENV: 'Test'}});
+    gulp.src('tests/*.js', {read: false})
+        .pipe(mocha({reporter: "nyan"}));
 });
